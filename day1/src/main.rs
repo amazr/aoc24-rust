@@ -26,10 +26,10 @@ fn solve_puzzle_1(lists: &mut Lists) {
     lists.l.sort();
     lists.r.sort();
 
-    let mut acc = 0;
-    for (l, r) in lists.l.iter().zip(lists.r.iter()) {
-        acc = acc + (l - r).abs();
-    }
+    let acc: isize = lists.l.iter()
+        .zip(lists.r.iter())
+        .map(|(l, r)| (l - r).abs())
+        .sum();
 
     println!("Day 1 puzzle 1: {}", acc);
 }
@@ -43,9 +43,9 @@ fn solve_puzzle_2(lists: &mut Lists) {
     let mut freq: HashMap<isize, Frequency> = HashMap::new();
 
     for l in lists.l.iter() {
-        match freq.get(l) {
+        match freq.get_mut(l) {
             Some(v) => {
-                freq.insert(*l, Frequency { og: v.og, acc: v.acc + v.og });
+                v.acc += v.og;
             },
             None => {
                 let occ = lists.r.iter().filter(|x| *x == l).count() as isize * l;
@@ -54,11 +54,7 @@ fn solve_puzzle_2(lists: &mut Lists) {
         }
     }
 
-    let mut acc = 0;
-    for (_k, v) in freq.iter() {
-        acc = acc + v.acc;
-    }
-
+    let acc: isize = freq.values().map(|v| v.acc).sum();
     println!("Day 1 puzzle 2: {}", acc);
 }
 
